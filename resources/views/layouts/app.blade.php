@@ -37,6 +37,9 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('staff.bookings.index') }}">Manage Bookings</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('branches.index') }}">Manage Branches</a>
+                            </li>
                         @endif
                     @endauth
                 </ul>

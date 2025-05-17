@@ -57,6 +57,8 @@ Route::middleware(['auth'])->group(function (){
         Route::get('/branches', [BranchController::class, 'index'])->name('branches.index');
         Route::get('/staff/branches/create', [BranchController::class, 'create'])->name('branches.create');
         Route::post('/staff/branches', [BranchController::class, 'store'])->name('branches.store');
-
+        Route::get('staff/branches/{branch}/edit', [BranchController::class, 'edit'])->name('branches.edit');
+        Route::put('staff/branches/{branch}', [BranchController::class, 'update'])->name('branches.update');
+        Route::delete('staff/branches/{branch}', [BranchController::class, 'destroy'])->name('branches.destroy');
     });
 });
