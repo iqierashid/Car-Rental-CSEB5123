@@ -1,7 +1,62 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\BookingController;
+use App\Http\Controllers\CarController;
+use App\Http\Controllers\BranchController;
+use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\StaffController;
 
 Route::get('/', function () {
     return view('welcome');
+});
+
+Auth::routes();
+
+// Home redirects to correct dashboard
+Route::get('/home', function () {
+    if (auth()->user()->role === 'staff') {
+        return redirect('/dashboard/staff');
+    } else {
+        return redirect('/dashboard/customer');
+    }
+})->middleware('auth');
+
+Route::middleware(['auth'])->group(function (){
+    Route::get('/dashboard/customer', [CustomerController::class, 'index'])
+    ->name('dashboard.customer')
+    ->can('view-customer-dashboard');
+
+    Route::get('/dashboard/staff', [StaffController::class, 'index'])
+    ->name('dashboard.staff')
+    ->can('view-staff-dashboard');
+
+    Route::middleware('can:is-customer')->group(function () {
+        Route::get('/bookings', [BookingController::class, 'index'])->name('bookings.index');
+        Route::get('/bookings/create', [BookingController::class, 'create']);
+        Route::post('/bookings', [BookingController::class, 'store']);
+
+        Route::get('/cars/index', [CarController::class, 'index'])->name('cars.index');
+    });
+
+    Route::middleware('can:is-staff')->group(function () {
+        Route::get('/bookings/manage', [BookingController::class, 'manage']);
+        Route::post('/bookings/{id}/status', [BookingController::class, 'updateStatus']);
+
+        Route::get('staff/cars/create', [CarController::class, 'create'])->name('staff.cars.create');
+        Route::post('staff/cars', [CarController::class, 'store'])->name('cars.store');
+        Route::get('staff/cars/{car}/edit', [CarController::class, 'edit'])->name('cars.edit');
+        Route::put('staff/cars/{car}', [CarController::class, 'update'])->name('cars.update');
+        Route::delete('staff/cars/{car}', [CarController::class, 'destroy'])->name('cars.destroy');
+        
+        Route::get('/staff/bookings', [StaffController::class, 'reviewBookings'])->name('staff.bookings.index');
+        Route::patch('/staff/bookings/{booking}/approve', [StaffController::class, 'approveBooking'])->name('staff.bookings.approve');
+        Route::patch('/staff/bookings/{booking}/reject', [StaffController::class, 'rejectBooking'])->name('staff.bookings.reject');
+
+        Route::get('/branches', [BranchController::class, 'index'])->name('branches.index');
+        Route::get('/staff/branches/create', [BranchController::class, 'create'])->name('branches.create');
+        Route::post('/staff/branches', [BranchController::class, 'store'])->name('branches.store');
+
+    });
 });
