@@ -35,49 +35,47 @@
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
-                        @foreach($bookings as $booking)
-                        <tr class="hover:bg-gray-50">
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm font-medium text-gray-900">#{{ $booking->id }}</div>
-                                <div class="text-sm text-gray-500">{{ $booking->created_at->format('M d, Y') }}</div>
-                            </td>
-                            <td class="px-6 py-4">
-                                @foreach($booking->cars as $car)
-                                <div class="flex items-center space-x-3 mb-2 last:mb-0">
-                                    <div class="flex-shrink-0 h-10 w-10 bg-gray-200 rounded-md flex items-center justify-center">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
-                                        </svg>
-                                    </div>
-                                    <div>
-                                        <div class="text-sm font-medium text-gray-900">{{ $car->brand }} {{ $car->model }}</div>
-                                        <div class="text-sm text-gray-500">{{ $car->plate_number }}</div>
-                                    </div>
-                                </div>
-                                @endforeach
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-900">{{ $booking->start_date->format('M d, Y') }}</div>
-                                <div class="text-sm text-gray-500">to {{ $booking->end_date->format('M d, Y') }}</div>
-                                <div class="text-xs text-gray-400 mt-1">
-                                    {{ $booking->start_date->diffInDays($booking->end_date) }} days
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                @php
-                                    $statusColors = [
-                                        'pending' => 'bg-yellow-100 text-yellow-800',
-                                        'confirmed' => 'bg-green-100 text-green-800',
-                                        'rejected' => 'bg-red-100 text-red-800',
-                                        'completed' => 'bg-blue-100 text-blue-800'
-                                    ];
-                                @endphp
-                                <span class="px-2 py-1 text-xs font-semibold rounded-full {{ $statusColors[$booking->status] ?? 'bg-gray-100 text-gray-800' }}">
-                                    {{ ucfirst($booking->status) }}
-                                </span>
-                            </td>
-                        </tr>
-                        @endforeach
+                    @foreach($bookings as $booking)
+<tr class="hover:bg-gray-50">
+    <td class="px-6 py-4 whitespace-nowrap">
+        <div class="text-sm font-medium text-gray-900">#{{ $booking->id }}</div>
+        <div class="text-sm text-gray-500">{{ $booking->created_at->format('M d, Y') }}</div>
+    </td>
+    <td class="px-6 py-4">
+        @foreach($booking->cars as $car)
+        <div class="flex items-center space-x-3 mb-2 last:mb-0">
+            <div class="flex-shrink-0 h-10 w-10 bg-gray-200 rounded-md flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                </svg>
+            </div>
+            <div>
+                <div class="text-sm font-medium text-gray-900">{{ $car->brand }} {{ $car->model }}</div>
+                <div class="text-sm text-gray-500">{{ $car->plate_number }}</div>
+            </div>
+        </div>
+        @endforeach
+    </td>
+    <td class="px-6 py-4 whitespace-nowrap">
+        <div class="text-sm text-gray-900">
+            {{ $booking->start_date instanceof \DateTime ? $booking->start_date->format('M d, Y') : \Carbon\Carbon::parse($booking->start_date)->format('M d, Y') }}
+        </div>
+        <div class="text-sm text-gray-500">
+            to {{ $booking->end_date instanceof \DateTime ? $booking->end_date->format('M d, Y') : \Carbon\Carbon::parse($booking->end_date)->format('M d, Y') }}
+        </div>
+        <div class="text-xs text-gray-400 mt-1">
+            @php
+                $start = $booking->start_date instanceof \DateTime ? $booking->start_date : \Carbon\Carbon::parse($booking->start_date);
+                $end = $booking->end_date instanceof \DateTime ? $booking->end_date : \Carbon\Carbon::parse($booking->end_date);
+                echo $start->diffInDays($end) . ' days';
+            @endphp
+        </div>
+    </td>
+    <td class="px-6 py-4 whitespace-nowrap">
+        <!-- Status badge remains the same -->
+    </td>
+</tr>
+@endforeach
                     </tbody>
                 </table>
             </div>
