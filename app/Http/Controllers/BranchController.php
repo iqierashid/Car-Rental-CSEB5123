@@ -12,8 +12,7 @@ class BranchController extends Controller
      */
     public function index()
     {
-        $branches = Branch::latest()->get();
-        return view('branches.index', compact('branches'));
+        //
     }
 
     /**
@@ -21,7 +20,7 @@ class BranchController extends Controller
      */
     public function create()
     {
-        return view('branches.create');
+        //
     }
 
     /**
@@ -29,15 +28,7 @@ class BranchController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'location' => 'required|string|max:255'
-        ]);
-
-        Branch::create($request->only('name', 'location'));
-
-        return redirect()->route('branches.index')
-            ->with('success', 'Branch created successfully');
+        //
     }
 
     /**
@@ -53,7 +44,7 @@ class BranchController extends Controller
      */
     public function edit(Branch $branch)
     {
-        return view('branches.edit', compact('branch'));
+        //
     }
 
     /**
@@ -61,15 +52,7 @@ class BranchController extends Controller
      */
     public function update(Request $request, Branch $branch)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'location' => 'required|string|max:255'
-        ]);
-
-        $branch->update($request->only('name', 'location'));
-
-        return redirect()->route('branches.index')
-            ->with('success', 'Branch updated successfully');
+        //
     }
 
     /**
@@ -77,8 +60,6 @@ class BranchController extends Controller
      */
     public function destroy(Branch $branch)
     {
-        $branch->delete();
-        return redirect()->route('branches.index')
-            ->with('success', 'Branch deleted successfully');
+        //
     }
 }
